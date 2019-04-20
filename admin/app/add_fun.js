@@ -14,30 +14,66 @@ $(function() {
   }
 
   $(".section").on("click", ".s_el", function(e) {
-    current_section_index = $(e.target).data("index");
-    $(".a_num_s_el" + current_section_index).css("background", "#e2e5de");
-    current_section = sections[current_section_index];
-    reload();
+      current_section_index = $(e.target).data("index");
+      $(".a_num_s_el" + current_section_index).css("background", "#e2e5de");
+      current_section = sections[current_section_index];
+      current_question = current_section.questions[0];
+      reload();
   });
 
   $(".questions").on("click", ".q_el", function(e) {
     current_question_index = $(e.target).data("index");
-    console.log(current_question_index);
     $(".a_num_q_el" + current_question_index).css("background", "#c2cac7");
-    current_question = current_section.questions[current_question_index];
+    current_question =  current_section.questions[current_question_index];
+    reload();
+  });
+
+  $(".section").on("click", ".rem_s_el", function(e) {
+    e.stopPropagation();
+    var index = $(e.currentTarget).data("index");
+    var questions_length = sections[index].questions.length;
+    var ans_length;
+    for(var t = questions_length - 1; t >= 0; t--) {
+      ans_length = sections[index].questions[t].ans.length;
+      for(var d = ans_length - 1; d >= 0; d--) {
+        sections[index].questions[t].ans.pop();
+      }
+      sections[index].questions.pop();
+    }
+    sections.splice(index, 1);
+    reload();
+  });
+
+  $(".questions").on("click", ".rem_q_el", function(e) {
+    e.stopPropagation();
+    var index = $(e.currentTarget).data("index");
+    var ans_length;
+    for(var d = ans_length - 1; d >= 0; d--) {
+      current_section.questions[t].ans.pop();
+    }
+    current_section.questions.splice(index, 1);
+    reload();
+  });
+
+  $(".answers").on("click", ".rem_a_el", function(e) {
+    e.stopPropagation();
+    var index = $(e.currentTarget).data("index");
+    $(".a_num_q_el" + index).remove();
+    current_question.ans.pop(index);
     reload();
   });
 
   function reloadNavigation(sections, index) {
     var div, a, span, p;
     $(".s_el").remove();
-    for(i = 0; i < sections.length; i++) {
+    for(var i = 0; i < sections.length; i++) {
       div = document.createElement("div");
       a = document.createElement("a");
       span = document.createElement("span");
       $(div).addClass("s_el " + "a_num_s_el" + i);
       $(div).data("index", i).html(sections[i].text);
       $(a).addClass("rem_s_el " + "r_num_s_el" + i);
+      $(a).data("index", i);
       $(span).addClass("glyphicon glyphicon-minus");
       $(".section .add_s").before(div);
       $(".a_num_s_el" + i).append(a);
@@ -51,13 +87,14 @@ $(function() {
     $(".q_el").remove();
     if(sections.length) {
       var div, a, span;
-      for(i = 0; i < current_section.questions.length; i++) {
+      for(var i = 0; i < current_section.questions.length; i++) {
         div = document.createElement("div");
         a = document.createElement("a");
         span = document.createElement("span");
         $(div).addClass("q_el " + "a_num_q_el" + i);
         $(div).data("index", i).html(current_section.questions[i].text);
         $(a).addClass("rem_q_el " + "r_num_q_el" + i);
+        $(a).data("index", i);
         $(span).addClass("glyphicon glyphicon-minus");
         $(".questions .add_q").before(div);
         $(".a_num_q_el" + i).append(a);
@@ -72,7 +109,7 @@ $(function() {
     $(".text").remove();
     if(current_section.questions.length) {
       var div, a, span, p, input, text, form;
-      for(i = 0; i < current_question.ans.length; i++) {
+      for(var i = 0; i < current_question.ans.length; i++) {
         div = document.createElement("div");
         a = document.createElement("a");
         span = document.createElement("span");
@@ -95,8 +132,9 @@ $(function() {
 
         $(p).addClass("p_ans " + "p_ans_el" + i);
         $(div).addClass("a_el " + "a_num_a_el" + i);
-        $(div).data("index", i).html(current_question.ans[i].text_a);
+        $(div).data("index", i).html(current_question.ans[i].text_a + i);
         $(a).addClass("rem_a_el " + "r_num_a_el" + i);
+        $(a).data("index", i);
         $(span).addClass("glyphicon glyphicon-minus");
 
         $(".f_ans").append(p);
@@ -107,6 +145,7 @@ $(function() {
       }
     }
   }
+
   $(".add_s").click(function() {
     sections.push({
       questions: [],
@@ -129,7 +168,7 @@ $(function() {
 
   $(".add_a").click(function() {
     current_question.ans.push({
-      text_q: "Text question" + current_question.ans.length,
+      text_q: "Text question",
       text_a: "new answer",
       flag: 0
     });
