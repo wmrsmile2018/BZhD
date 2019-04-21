@@ -5,6 +5,7 @@ $(function() {
   var sections = [];
   var current_section_index = 0;
   var current_question_index = 0;
+  var current_answer_index = 0;
   var current_section = null;
   var current_question = null;
   var section_last_index = 0;
@@ -84,14 +85,6 @@ $(function() {
     $(".a_num_q_el" + tmp).css("background", "#fff");
     current_question =  current_section.questions[tmp];
     reload();
-    var input;
-    input = document.createElement("input");
-    input.type = "text";
-    input.size = 12;
-    $(input).addClass("text_q" + tmp + " q_el_t");
-    $(".q_el_num" + tmp).hide();
-    $(".r_num_q_el" + tmp).before(input);
-    reload();
     if(touch_time_q == 0) {
       touch_time_q = new Date().getTime();
     } else {
@@ -138,6 +131,32 @@ $(function() {
         });
       }
       touch_time_a_t = 0;
+    }
+  });
+
+  $(".answers").on("click", ".a_el", (e) => {
+    current_question_index = $(e.target).data("index");//#c2cac7
+    var tmp = current_question_index;
+    if(touch_time_q == 0) {
+      touch_time_q = new Date().getTime();
+    } else {
+      if(((new Date().getTime()) - touch_time_q) < 400) {
+        var input = document.createElement("input");
+        input.type = "text";
+        input.size = 12;
+        $(input).addClass("text_a" + tmp + " a_el_t");
+        $(".a_el_num" + tmp).hide();
+        $(".r_num_a_el" + tmp).before(input);
+        $(".text_a" + tmp).keydown(function(e) {
+          if(e.which == 13) {
+            current_question.ans[tmp].text_a = $(".text_a" + tmp).val();
+            $(".a_el_num" + tmp).show();
+            $(".text_a" + tmp).hide();
+            reload();
+          }
+        });
+      }
+      touch_time_q = 0;
     }
   });
 
@@ -230,9 +249,10 @@ $(function() {
     $(".f_ans").remove();
     $(".text").remove();
     if(current_section.questions.length) {
-      var div, a, span, p, input, text, form;
+      var div, a, span, p, input, text, form, div2;
       for(var i = 0; i < current_question.ans.length; i++) {
         div = document.createElement("div");
+        div2 = document.createElement("div");
         a = document.createElement("a");
         span = document.createElement("span");
         p = document.createElement("p");
@@ -252,8 +272,11 @@ $(function() {
         }
 
         $(p).addClass("p_ans " + "p_ans_el" + i);
+          // $(div2).addClass("s_el_t " +"s_el_num" + i).text(sections[i].text);
+        $(div2).addClass("a_el_t " + "a_el_num" +i).text(current_question.ans[i].text_a);
         $(div).addClass("a_el " + "a_num_a_el" + i);
-        $(div).data("index", i).html(current_question.ans[i].text_a);
+        $(div).data("index", i);
+        $(div2).data("index", i);
         $(a).addClass("rem_a_el " + "r_num_a_el" + i);
         $(a).data("index", i);
         $(span).addClass("glyphicon glyphicon-minus");
@@ -261,6 +284,7 @@ $(function() {
         $(".f_ans").append(p);
         $(".p_ans_el" + i).append(input);
         $(".p_ans_el" + i).append(div);
+        $(".a_num_a_el" + i).append(div2);
         $(".a_num_a_el" + i).append(a);
         $(".r_num_a_el" + i).append(span);
       }

@@ -13,7 +13,7 @@ a {
   font-size: 17px;
   font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
 }
-.s_el_t, .q_el_t {
+.s_el_t, .q_el_t, .a_el_t, .p_text, .a_el {
   display: inline-block;
 }
 .s_el {
@@ -24,12 +24,7 @@ a {
   margin-left: 5px;
   color: #105bab;
 }
-.p_text {
-  display: inline-block;
-}
-.a_el {
-  display: inline-block;
-}
+
 .q_el {
   background: #bbbbbb4a;
   margin-top: 5px;
