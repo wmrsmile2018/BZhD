@@ -35,7 +35,7 @@ a {
 } */
 
 .f_ans {
-  margin-left: 10px;
+  /* margin-left: 10px; */
 }
 .q_el_t {
   overflow-x: hidden;
@@ -81,9 +81,9 @@ a {
 }
 .contents {
   display: grid;
-  height: calc(100vh - 29px);
-  width: 506px;
-  grid-template-columns: 33% 67%;
+  height: calc(100vh - 52px);
+  /* width: 506px; */
+  grid-template-columns: 167px calc(100% - 167px);
 }
 .answers, .questions {
   overflow-y: scroll;
@@ -91,9 +91,11 @@ a {
 }
 .questions {
   border-right: 1px solid black;
-  min-width: 163px;
   background: #f5f5f5;
   border-right: 1px solid white;
+}
+.answers {
+  padding-left: 10px;
 }
 .ans, .quest, .sect {
   color: #0016d2;

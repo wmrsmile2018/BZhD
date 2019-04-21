@@ -24,7 +24,6 @@ $(function() {
   // }
 
   // спроецировать текст вопроса в new question
-  // пофикисить text question
 
   function reload() {
     reloadNavigation(sections, current_section_index);
