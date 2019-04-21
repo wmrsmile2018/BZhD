@@ -19,15 +19,41 @@ a {
 .a_el {
   padding-left: 8px;
 }
+.rem_q_el {
+  position: absolute;
+  left: 133px;
+}
+
+.rem_s_el {
+  position: absolute;
+  /* left: 137px; */
+}
+
+/* .rem_a_el {
+  position: absolute;
+  left: 133px;
+} */
+
 .f_ans {
   margin-left: 10px;
 }
+.q_el_t {
+  overflow-x: hidden;
+  position: relative;
+  max-width: 111px;
+}
+.s_el_t {
+  overflow-x: hidden;
+  position: relative;
+  max-width: 100px;
+  margin-right: 10px;
+  /* padding-left: 4px; */
+}
 .s_el {
   display: inline-block;
-  padding: 0px 10px 15px 10px;
   background: white;
-  padding: 4px 10px 7px 10px;
-  margin-left: 15px;
+  padding: 4px 22px 14px 10px;
+  margin-left: 19px;
   color: #105bab;
 }
 .text {
@@ -36,6 +62,7 @@ a {
 .q_el {
   background: #fff;
   margin-top: 10px;
+  max-width: 165px;
   padding-left: 10px;
 }
 .p_ans {
@@ -43,11 +70,11 @@ a {
   margin-bottom: 0px;
 }
 .section {
-  padding-top: 7px;
+  padding-top: 10px;
   overflow-x: scroll;
   white-space: nowrap;
   overflow-y: hidden;
-  height: 43px;
+  height: 52px;
   border-bottom: 1px solid black;
   background: #dddddd;
   border-bottom: 1px solid white;
@@ -55,8 +82,8 @@ a {
 .contents {
   display: grid;
   height: calc(100vh - 29px);
-  min-width: 510px;
-  grid-template-columns: 20% 80%;
+  width: 506px;
+  grid-template-columns: 33% 67%;
 }
 .answers, .questions {
   overflow-y: scroll;
@@ -64,7 +91,7 @@ a {
 }
 .questions {
   border-right: 1px solid black;
-  min-width: 100px;
+  min-width: 163px;
   background: #f5f5f5;
   border-right: 1px solid white;
 }

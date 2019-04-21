@@ -17,15 +17,18 @@ $(function() {
   var touch_time_a_t = 0;
   var touch_time_a_a = 0;
 
+  // Добавить функцию esc
   // function sleep(ms) {
   //   ms += new Date().getTime();
   //   while (new Date() < ms){}
   // }
 
+  // спроецировать текст вопроса в new question
+  // пофикисить text question
+
   function reload() {
     reloadNavigation(sections, current_section_index);
     reloadLeftMenu(current_section, current_question_index);
-
     reloadQuestionContent(current_question);
   }
 
@@ -70,6 +73,7 @@ $(function() {
         $(input).addClass("text_s" + tmp + " s_el_t");
         $(".s_el_num" + tmp).hide();
         $(".r_num_s_el" + tmp).before(input);
+        $(".text_s" + tmp).val($(".s_el_num" + tmp).text());
         $(".text_s" + tmp).keydown(function(e) {
           if(e.which == 13) {
             sections[tmp].text = $(".text_s" + tmp).val();
@@ -111,8 +115,10 @@ $(function() {
         input.type = "text";
         input.size = 12;
         $(input).addClass("text_q" + tmp + " q_el_t");
+        console.log($(".q_el_num" + tmp).text());
         $(".q_el_num" + tmp).hide();
         $(".r_num_q_el" + tmp).before(input);
+        $(".text_q" + tmp).val($(".q_el_num" + tmp).text());
         $(".text_q" + tmp).keydown(function(e) {
           if(e.which == 13) {
             current_section.questions[tmp].text = $(".text_q" + tmp).val();
@@ -129,6 +135,9 @@ $(function() {
   });
 
   $(".answers").on("click", ".text", (e) => {
+    // current_question_index = $(e.target).data("index");//#c2cac7
+    // var tmp = current_question_index;
+    // console.log(tmp);
     if(touch_time_a_t == 0) {
       touch_time_a_t = new Date().getTime();
     } else {
@@ -139,9 +148,14 @@ $(function() {
         $(input).addClass("text_t");
         $(".text").hide();
         $(".f_ans").before(input);
+        $(".text_t").val($(".text").text());
         $(".text_t").keydown((e) => {
+          // console.log(current_question.ans[0].te);
           if(e.which == 13) {
-            current_question.ans[current_question_index].text_q = $(".text_t").val();
+            // console.log($(".text_t").val());
+            current_question.ans[0].text_q = $(".text_t").val();
+            console.log(current_question.ans[0].text_q);
+            console.log($(".text_t").val());
             $(".text").show();
             $(".text_t").hide();
             reload();
@@ -165,7 +179,8 @@ $(function() {
         $(input).addClass("text_a" + tmp + " a_el_t");
         $(".a_el_num" + tmp).hide();
         $(".r_num_a_el" + tmp).before(input);
-        $(".text_a" + tmp).keydown(function(e) {
+        $(".text_a" + tmp).val($(".a_el_num" + tmp).text());
+        $(".text_a" + tmp).keydown((e) => {
           if(e.which == 13) {
             current_question.ans[tmp].text_a = $(".text_a" + tmp).val();
             $(".a_el_num" + tmp).show();
@@ -265,6 +280,7 @@ $(function() {
   function reloadQuestionContent(current_question) {
     $(".f_ans").remove();
     $(".text").remove();
+    $(".text_t").remove();
     if(current_section.questions.length) {
       var div, a, span, p, input, text, form, div2;
       for(var i = 0; i < current_question.ans.length; i++) {
@@ -282,7 +298,7 @@ $(function() {
 
         if(!i) {
           $(form).addClass("f_ans");
-          $(text).addClass("text").html(current_question.ans[i].text_q);
+          $(text).addClass("text " + "text_num" + i).text(current_question.ans[i].text_q);
           $(".answers .add_a").before(text);
           $(".answers .add_a").before(form);
         }
