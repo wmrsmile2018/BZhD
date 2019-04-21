@@ -16,21 +16,31 @@ a {
 .s_el_t, .q_el_t, .a_el_t, .p_text, .a_el {
   display: inline-block;
 }
+.a_el {
+  padding-left: 8px;
+}
+.f_ans {
+  margin-left: 10px;
+}
 .s_el {
   display: inline-block;
   padding: 0px 10px 15px 10px;
   background: white;
   padding: 4px 10px 7px 10px;
-  margin-left: 5px;
+  margin-left: 15px;
   color: #105bab;
 }
-
+.text {
+  margin: 7px 0px 5px 0px;
+}
 .q_el {
-  background: #bbbbbb4a;
-  margin-top: 5px;
+  background: #fff;
+  margin-top: 10px;
+  padding-left: 10px;
 }
 .p_ans {
-  margin: 0px;
+  margin-top: 2px;
+  margin-bottom: 0px;
 }
 .section {
   padding-top: 7px;
@@ -48,7 +58,9 @@ a {
   min-width: 510px;
   grid-template-columns: 20% 80%;
 }
-.answers {
+.answers, .questions {
+  overflow-y: scroll;
+  white-space: nowrap;
 }
 .questions {
   border-right: 1px solid black;

@@ -6,6 +6,7 @@ $(function() {
   var current_section_index = 0;
   var current_question_index = 0;
   var current_answer_index = 0;
+  var current_answer_index_checkbox = 0;
   var current_section = null;
   var current_question = null;
   var section_last_index = 0;
@@ -16,11 +17,29 @@ $(function() {
   var touch_time_a_t = 0;
   var touch_time_a_a = 0;
 
+  // function sleep(ms) {
+  //   ms += new Date().getTime();
+  //   while (new Date() < ms){}
+  // }
+
   function reload() {
     reloadNavigation(sections, current_section_index);
     reloadLeftMenu(current_section, current_question_index);
+
     reloadQuestionContent(current_question);
   }
+
+  $(".answers").on("click", "input", (e) => {
+    current_answer_index_checkbox = $(e.target).data("index");
+    var tmp = current_answer_index_checkbox;
+    current_question.ans[tmp].flag = e.target.checked;
+    if(current_question.ans[tmp].flag) {
+      $(".p_ans_el" + tmp).css("background", "#e6e6e6");
+    } else {
+      $(".p_ans_el" + tmp).css("background", "#fff");
+    }
+    // reload();
+  });
 
   $(".section").on("click", ".s_el_t", function(e) {
     current_section_index = $(e.target).data("index");
@@ -28,7 +47,6 @@ $(function() {
     $(".a_num_s_el" + tmp).css("background", "#e2e5de");
     current_section = sections[tmp];
     current_question = current_section.questions[0];
-    console.log("click section");
   });
 
   $(".section").on("click", ".s_el input", (e) => {
@@ -71,7 +89,7 @@ $(function() {
   $(".questions").on("click", ".q_el_t", function(e) {
     current_question_index = $(e.target).data("index");//#c2cac7
     var tmp = current_question_index;
-    $(".a_num_q_el" + tmp).css("background", "#fff");
+    $(".a_num_q_el" + tmp).css("background", "#bbbbbb4a");
     current_question =  current_section.questions[tmp];
   });
 
@@ -82,7 +100,7 @@ $(function() {
   $(".questions").on("click", ".q_el", function(e) {
     current_question_index = $(e.target).data("index");//#c2cac7
     var tmp = current_question_index;
-    $(".a_num_q_el" + tmp).css("background", "#fff");
+    $(".a_num_q_el" + tmp).css("background", "#bbbbbb4a");
     current_question =  current_section.questions[tmp];
     reload();
     if(touch_time_q == 0) {
@@ -100,7 +118,7 @@ $(function() {
             current_section.questions[tmp].text = $(".text_q" + tmp).val();
             $(".q_el_num" + tmp).show();
             $(".text_q" + tmp).hide();
-            $(".a_num_q_el" + tmp).css("background", "#fff");
+            $(".a_num_q_el" + tmp).css("background", "#bbbbbb4a");
             current_question =  current_section.questions[tmp];
             reload();
           }
@@ -218,7 +236,6 @@ $(function() {
       $(".a_num_s_el" + index).css("background", "#e2e5de");
   }
 
-
   function reloadLeftMenu(current_section, index) {
     $(".q_el").remove();
     if(sections.length) {
@@ -241,7 +258,7 @@ $(function() {
         $(".a_num_q_el" + i).append(a);
         $(".r_num_q_el" + i).append(span);
       }
-      $(".a_num_q_el" + index).css("background", "#fff");
+      $(".a_num_q_el" + index).css("background", "#bbbbbb4a");
     }
   }
 
@@ -259,9 +276,8 @@ $(function() {
         input = document.createElement("input");
         text = document.createElement("div");
         form = document.createElement("form");
-
+        input.checked = current_question.ans[i].flag;
         input.type = "checkbox";
-        input.value = "checkbox" + i;
         input.name = "ans" + i;
 
         if(!i) {
@@ -271,8 +287,8 @@ $(function() {
           $(".answers .add_a").before(form);
         }
 
+        $(input).data("index", i);
         $(p).addClass("p_ans " + "p_ans_el" + i);
-          // $(div2).addClass("s_el_t " +"s_el_num" + i).text(sections[i].text);
         $(div2).addClass("a_el_t " + "a_el_num" +i).text(current_question.ans[i].text_a);
         $(div).addClass("a_el " + "a_num_a_el" + i);
         $(div).data("index", i);
@@ -287,6 +303,13 @@ $(function() {
         $(".a_num_a_el" + i).append(div2);
         $(".a_num_a_el" + i).append(a);
         $(".r_num_a_el" + i).append(span);
+      }
+      for(var i = 0; i < current_question.ans.length; i++) {
+        if(current_question.ans[i].flag) {
+          $(".answers .p_ans_el" + i).css("background", "#e6e6e6");
+        } else {
+          $(".answers .p_ans_el " + i).css("background", "#fff");
+        }
       }
     }
   }
@@ -317,7 +340,7 @@ $(function() {
     current_question.ans.push({
       text_q: "Text question",
       text_a: "new answer" + answer_last_index,
-      flag: 0
+      flag: false
     });
     reload();
     answer_last_index++;
