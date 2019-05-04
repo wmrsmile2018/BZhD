@@ -28,7 +28,9 @@ a {
   position: absolute;
   /* left: 137px; */
 }
-
+.a_el_i {
+  width: 150px;
+}
 /* .rem_a_el {
   position: absolute;
   left: 133px;

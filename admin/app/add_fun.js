@@ -1,29 +1,33 @@
-$(function() {
-  var i_s = 0, i = 0, i_q = 0;
-  // 27 - esc
-  // 13 - enter
-  var sections = [];
-  var current_section_index = 0;
-  var current_question_index = 0;
-  var current_answer_index = 0;
-  var current_answer_index_checkbox = 0;
-  var current_section = null;
-  var current_question = null;
-  var section_last_index = 0;
-  var question_last_index = 0;
-  var answer_last_index = 0;
-  var touch_time_s = 0;
-  var touch_time_q = 0;
-  var touch_time_a_t = 0;
-  var touch_time_a_a = 0;
+let fs = require('fs');
+let path = require('path');
 
+var i_s = 0, i = 0, i_q = 0;
+// 27 - esc
+// 13 - enter
+var sections = [];
+var current_section_index = 0;
+var current_question_index = 0;
+var current_answer_index = 0;
+var current_answer_index_checkbox = 0;
+var current_section = null;
+var current_question = null;
+var section_last_index = 0;
+var question_last_index = 0;
+var answer_last_index = 0;
+var touch_time_s = 0;
+var touch_time_q = 0;
+var touch_time_a_t = 0;
+var touch_time_a_a = 0;
+var placeholder_data = "data:image/png;base64," + fs.readFileSync("placeholder.png").toString("base64");
+
+$(function() {
   // Добавить функцию esc
   // function sleep(ms) {
   //   ms += new Date().getTime();
   //   while (new Date() < ms){}
   // }
 
-  // спроецировать текст вопроса в new question
+  // спроецировать текст вопроса в new question ?
 
   function reload() {
     reloadNavigation(sections, current_section_index);
@@ -31,6 +35,24 @@ $(function() {
     reloadQuestionContent(current_question);
   }
 
+  $(".answers").on("change", ".image_input_a", (e) => {
+    var input = e.target;
+    var tmp = $(input).data("index");
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      var extension = input.files[0].path.split(".").pop();
+      var data = (new Date()).getTime() + "." + extension;
+      fs.writeFile("./images/" + data, fs.readFileSync(input.files[0].path), (err) => {
+         if(err) {
+           console.log(err);
+         }
+         console.log("file is saved");
+        });
+      current_question.ans[tmp].image_a = `data:image/${extension};base64,${fs.readFileSync(input.files[0].path).toString("base64")}`;
+      current_question.ans[tmp].name = data;
+      reload();
+      }
+  });
   $(".answers").on("click", "input", (e) => {
     current_answer_index_checkbox = $(e.target).data("index");
     var tmp = current_answer_index_checkbox;
@@ -40,7 +62,6 @@ $(function() {
     } else {
       $(".p_ans_el" + tmp).css("background", "#fff");
     }
-    // reload();
   });
 
   $(".section").on("click", ".s_el_t", function(e) {
@@ -168,27 +189,29 @@ $(function() {
   $(".answers").on("click", ".a_el", (e) => {
     current_question_index = $(e.target).data("index");//#c2cac7
     var tmp = current_question_index;
-    if(touch_time_q == 0) {
-      touch_time_q = new Date().getTime();
-    } else {
-      if(((new Date().getTime()) - touch_time_q) < 400) {
-        var input = document.createElement("input");
-        input.type = "text";
-        input.size = 12;
-        $(input).addClass("text_a" + tmp + " a_el_t");
-        $(".a_el_num" + tmp).hide();
-        $(".r_num_a_el" + tmp).before(input);
-        $(".text_a" + tmp).val($(".a_el_num" + tmp).text());
-        $(".text_a" + tmp).keydown((e) => {
-          if(e.which == 13) {
-            current_question.ans[tmp].text_a = $(".text_a" + tmp).val();
-            $(".a_el_num" + tmp).show();
-            $(".text_a" + tmp).hide();
-            reload();
-          }
-        });
+    if(current_question.ans[tmp].kind == "text") {
+      if(touch_time_q == 0) {
+        touch_time_q = new Date().getTime();
+      } else {
+        if(((new Date().getTime()) - touch_time_q) < 400) {
+          var input = document.createElement("input");
+          input.type = "text";
+          input.size = 12;
+          $(input).addClass("text_a" + tmp + " a_el_t");
+          $(".a_el_num" + tmp).hide();
+          $(".r_num_a_el" + tmp).before(input);
+          $(".text_a" + tmp).val($(".a_el_num" + tmp).text());
+          $(".text_a" + tmp).keydown((e) => {
+            if(e.which == 13) {
+              current_question.ans[tmp].text_a = $(".text_a" + tmp).val();
+              $(".a_el_num" + tmp).show();
+              $(".text_a" + tmp).hide();
+              reload();
+            }
+          });
+        }
+        touch_time_q = 0;
       }
-      touch_time_q = 0;
     }
   });
 
@@ -247,6 +270,8 @@ $(function() {
       $(".a_num_s_el" + i).append(a);
       $(".r_num_s_el" + i).append(span);
     }
+
+
       $(".a_num_s_el" + index).css("background", "#e2e5de");
   }
 
@@ -280,42 +305,60 @@ $(function() {
     $(".f_ans").remove();
     $(".text").remove();
     $(".text_t").remove();
+    $(".add_image").remove();
     if(current_section.questions.length) {
-      var div, a, span, p, input, text, form, div2;
+      var div, div2, input, input2, a, a1, span, span1, text, form, p, img;
       for(var i = 0; i < current_question.ans.length; i++) {
+        img = document.createElement("img");
         div = document.createElement("div");
         div2 = document.createElement("div");
         a = document.createElement("a");
         span = document.createElement("span");
+        a1 = document.createElement("a");
+        span1 = document.createElement("span");
         p = document.createElement("p");
         input = document.createElement("input");
         text = document.createElement("div");
         form = document.createElement("form");
+        input2 = document.createElement("input");
+
         input.checked = current_question.ans[i].flag;
         input.type = "checkbox";
         input.name = "ans" + i;
+        input2.type = "file";
 
         if(!i) {
+          $(a1).addClass("add_image");
+          $(span1).addClass("add_a_i").text("add image");
           $(form).addClass("f_ans");
           $(text).addClass("text " + "text_num" + i).text(current_question.ans[i].text_q);
           $(".answers .add_a").before(text);
+          $(".answers .add_a").before(a1);
+          $(".add_image").append(span1);
+
           $(".answers .add_a").before(form);
         }
 
         $(input).data("index", i);
+        $(input2).data("index", i);
+        $(input2).addClass("image_input_a " + "i_i_a_num" + i);
         $(p).addClass("p_ans " + "p_ans_el" + i);
-        $(div2).addClass("a_el_t " + "a_el_num" +i).text(current_question.ans[i].text_a);
-        $(div).addClass("a_el " + "a_num_a_el" + i);
-        $(div).data("index", i);
-        $(div2).data("index", i);
-        $(a).addClass("rem_a_el " + "r_num_a_el" + i);
-        $(a).data("index", i);
-        $(span).addClass("glyphicon glyphicon-minus");
-
         $(".f_ans").append(p);
         $(".p_ans_el" + i).append(input);
+        $(div).addClass("a_el " + "a_num_a_el" + i).data("index", i);
         $(".p_ans_el" + i).append(div);
-        $(".a_num_a_el" + i).append(div2);
+
+        if(current_question.ans[i].kind == "text") {
+          $(div2).addClass("a_el_t " + "a_el_num" + i).text(current_question.ans[i].text_a).data("index", i);
+          $(".a_num_a_el" + i).append(div2);
+        } else if (current_question.ans[i].kind == "image") {
+          // console.log(current_question.ans[i].image_a);
+          $(img).addClass("a_el_i " + "a_el_num_i" + i).data("index", i).attr("src", current_question.ans[i].image_a);
+          $(".a_num_a_el" + i).append(img);
+          $(".a_num_a_el" + i).append(input2);
+        }
+        $(a).addClass("rem_a_el " + "r_num_a_el" + i).data("index", i);
+        $(span).addClass("glyphicon glyphicon-minus");
         $(".a_num_a_el" + i).append(a);
         $(".r_num_a_el" + i).append(span);
       }
@@ -353,11 +396,23 @@ $(function() {
 
   $(".add_a").click(function() {
     current_question.ans.push({
+      kind: "text",
       text_q: "Text question",
       text_a: "new answer" + answer_last_index,
       flag: false
     });
     reload();
     answer_last_index++;
+  });
+  $(".add_a_image").click(function() {
+    current_question.ans.push({
+      kind: "image",
+      text_q: "Text question",
+      flag: false ,
+      image_a: placeholder_data,
+      name: null
+    });
+    reload();
+    // answer_last_index++;
   });
 });
