@@ -23,12 +23,21 @@ a {
   position: absolute;
   left: 133px;
 }
-
+.div_arr_img {
+  display: inline-block;
+  margin-right: 5px;
+}
+.rem_arr_img, .inp_arr_img {
+  display: block;
+}
+.inp_arr_img {
+  font-size: 11px;
+}
 .rem_s_el {
   position: absolute;
   /* left: 137px; */
 }
-.a_el_i {
+.a_el_i, .arr_img {
   width: 150px;
 }
 /* .rem_a_el {
