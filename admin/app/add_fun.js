@@ -1,15 +1,12 @@
 let fs = require('fs');
 let path = require('path');
-var i_s = 0, i = 0, i_q = 0;
 // var aes = new pidCrypt.AES.CBC();
 // 27 - esc
 // 13 - enter
 var sections = JSON.parse(fs.readFileSync("./json/data.json").toString());
-console.log(sections);
+// console.log(sections);
 var current_section_index;
 var current_question_index;
-var current_answer_index = 0;
-var current_answer_index_checkbox = 0;
 var current_section;
 var current_question;
 var array_image_questions;
@@ -31,6 +28,8 @@ if(current_section == null) {
   array_image_questions = current_section.questions[current_question_index];
 }
 
+var current_answer_index = 0;
+var current_answer_index_checkbox = 0;
 var touch_time_s = 0;
 var touch_time_q = 0;
 var touch_time_a_t = 0;
@@ -55,13 +54,12 @@ $(function() {
     reloadNavigation(sections, current_section_index);
     reloadLeftMenu(current_section, current_question_index);
     reloadQuestionContent(current_question);
-    fs.writeFile("./json/data.json", JSON.stringify(sections), (err) => {
+    fs.writeFileSync("./json/data.json", JSON.stringify(sections), (err) => {
       if(err) {
         console.log(err);
       }
       console.log("file is saved");
     });
-
   }
   reload();
   $(".answers").on("change", ".inp_arr_img", (e) => {
@@ -397,7 +395,6 @@ $(function() {
             span2 = document.createElement("span");
             div3 = document.createElement("div");
             input1.type = "file";
-            input1.id = "files" + t;
             $(".lab_arr_img_num" + t).attr("for", "files" + t);
             $(input1).data("index", t).addClass("inp_arr_img " + "inp_arr_img_num" + t);
             $(div3).addClass("div_arr_img " + "div_arr_img_num" + t).data("index", t);
