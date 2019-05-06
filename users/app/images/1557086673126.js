@@ -1,35 +1,20 @@
 let fs = require('fs');
 let path = require('path');
-// var aes = new pidCrypt.AES.CBC();
+
+var i_s = 0, i = 0, i_q = 0;
 // 27 - esc
 // 13 - enter
-var sections = JSON.parse(fs.readFileSync("./json/data.json").toString());
-// console.log(sections);
-var current_section_index;
-var current_question_index;
-var current_section;
-var current_question;
-var array_image_questions;
-
-if(sections.length == 0) {
-  current_section = null;
-  current_section_index = 0;
-} else {
-  current_section_index = sections.length - 1;
-  current_section = sections[current_section_index];
-}
-if(current_section == null) {
-  current_question_index = 0;
-  current_question = null;
-  array_image_questions = null
-} else {
-  current_question_index = current_section.questions.length - 1;
-  current_question = current_section.questions[current_question_index];
-  array_image_questions = current_section.questions[current_question_index];
-}
-
+var sections = [];
+var current_section_index = 0;
+var current_question_index = 0;
 var current_answer_index = 0;
 var current_answer_index_checkbox = 0;
+var current_section = null;
+var current_question = null;
+var array_image_questions = null;
+var section_last_index = 0;
+var question_last_index = 0;
+var answer_last_index = 0;
 var touch_time_s = 0;
 var touch_time_q = 0;
 var touch_time_a_t = 0;
@@ -37,11 +22,7 @@ var touch_time_a_a = 0;
 var placeholder_url = "placeholder.png";
 var placeholder_data = "data:image/png;base64," + fs.readFileSync("placeholder.png").toString("base64");
 
-
-// console.log(JSON.parse(fs.readFileSync("./json/data.json").toString()));
-
 $(function() {
-
   // Добавить функцию esc
   // function sleep(ms) {
   //   ms += new Date().getTime();
@@ -54,20 +35,21 @@ $(function() {
     reloadNavigation(sections, current_section_index);
     reloadLeftMenu(current_section, current_question_index);
     reloadQuestionContent(current_question);
-    fs.writeFileSync("./json/data.json", JSON.stringify(sections));
-    console.log("reload");
+    fs.writeFile("./json/data.json", JSON.stringify(sections), (err) => {
+      if(err) {
+        console.log(err);
+      }
+      console.log("file is saved");
+    });
   }
-  reload();
 
   $(".answers").on("change", ".inp_arr_img", (e) => {
-    console.log("change1");
     var input = e.target;
     var tmp = $(input).data("index");
     if (input.files && input.files[0]) {
       var reader = new FileReader();
       var extension = input.files[0].path.split(".").pop();
       var data = (new Date()).getTime() + "." + extension;
-      console.log(data);
       fs.writeFileSync("./images/" + data, fs.readFileSync(input.files[0].path));
       current_question.image_q[tmp].image_data = "./images/" + data;
       current_question.image_q[tmp].name = data;
@@ -75,8 +57,7 @@ $(function() {
       }
   });
 
-  $(".answers").on("click", ".image_input_a", (e) => {
-    console.log("change2");
+  $(".answers").on("change", ".image_input_a", (e) => {
     var input = e.target;
     var tmp = $(input).data("index");
     if (input.files && input.files[0]) {
@@ -98,7 +79,6 @@ $(function() {
     } else {
       $(".p_ans_el" + tmp).css("background", "#fff");
     }
-    reload();
   });
 
   $(".section").on("click", ".s_el_t", function(e) {
@@ -107,7 +87,6 @@ $(function() {
     $(".a_num_s_el" + tmp).css("background", "#e2e5de");
     current_section = sections[tmp];
     current_question = current_section.questions[0];
-    array_image_questions = current_section.questions[0];
   });
 
   $(".section").on("click", ".s_el input", (e) => {
@@ -120,7 +99,6 @@ $(function() {
     $(".a_num_s_el" + tmp).css("background", "#e2e5de");
     current_section = sections[tmp];
     current_question = current_section.questions[0];
-    array_image_questions = current_section.questions[0];
     reload();
     if(touch_time_s == 0) {
       touch_time_s = new Date().getTime();
@@ -154,7 +132,6 @@ $(function() {
     var tmp = current_question_index;
     $(".a_num_q_el" + tmp).css("background", "#bbbbbb4a");
     current_question =  current_section.questions[tmp];
-    array_image_questions = current_section.questions[tmp];
   });
 
   $(".questions").on("click", ".q_el input", (e) => {
@@ -166,7 +143,6 @@ $(function() {
     var tmp = current_question_index;
     $(".a_num_q_el" + tmp).css("background", "#bbbbbb4a");
     current_question =  current_section.questions[tmp];
-    array_image_questions = current_section.questions[tmp];
     reload();
     if(touch_time_q == 0) {
       touch_time_q = new Date().getTime();
@@ -215,6 +191,8 @@ $(function() {
           if(e.which == 13) {
             // console.log($(".text_t").val());
             current_question.ans[0].text_q = $(".text_t").val();
+            console.log(current_question.ans[0].text_q);
+            console.log($(".text_t").val());
             $(".text").show();
             $(".text_t").hide();
             reload();
@@ -298,7 +276,7 @@ $(function() {
   });
 
   function reloadNavigation(sections, index) {
-    var div, a, span, div2;
+    var div, a, span, p, div2;
     $(".s_el").remove();
     for(var i = 0; i < sections.length; i++) {
       div = document.createElement("div");
@@ -317,13 +295,15 @@ $(function() {
       $(".a_num_s_el" + i).append(a);
       $(".r_num_s_el" + i).append(span);
     }
+
+
       $(".a_num_s_el" + index).css("background", "#e2e5de");
   }
 
   function reloadLeftMenu(current_section, index) {
     $(".q_el").remove();
     if(sections.length) {
-      var div, a, span, div2;
+      var div, a, span, div2, form;
       for(var i = 0; i < current_section.questions.length; i++) {
         div = document.createElement("div");
         div2 = document.createElement("div");
@@ -352,7 +332,7 @@ $(function() {
     $(".text_t").remove();
     $(".add_image").remove();
     $(".array_images").remove();
-    if(current_section && current_section.questions.length) {
+    if(current_section.questions.length) {
       var div, div1, div2, div3, input, input1, input2, a, a1, a2, span, span1, span2, text, form, p, img, img1;
       var extension;
       for(var i = 0; i < current_question.ans.length; i++) {
@@ -393,9 +373,12 @@ $(function() {
             span2 = document.createElement("span");
             div3 = document.createElement("div");
             input1.type = "file";
+            input1.id = "files" + t;
             $(".lab_arr_img_num" + t).attr("for", "files" + t);
             $(input1).data("index", t).addClass("inp_arr_img " + "inp_arr_img_num" + t);
             $(div3).addClass("div_arr_img " + "div_arr_img_num" + t).data("index", t);
+            console.log(current_question.image_q[t].image_data);
+            console.log(fs.readFileSync(current_question.image_q[t].image_data));
             $(img1).addClass("arr_img " + "arr_img_num" + t).data("index", t).attr("src", `data:image/${extension};base64,${fs.readFileSync(current_question.image_q[t].image_data).toString("base64")}`);
             $(a2).addClass("rem_arr_img " + "rem_arr_img_num" + t).data("index", t);
             $(span2).addClass("glyphicon glyphicon-minus");
@@ -406,6 +389,7 @@ $(function() {
             $(".rem_arr_img_num" + t).append(span2);
           }
         }
+
         $(input).data("index", i);
         $(input2).data("index", i);
         $(input2).addClass("image_input_a " + "i_i_a_num" + i);
@@ -442,16 +426,17 @@ $(function() {
   $(".add_s").click(function() {
     sections.push({
       questions: [],
-      text: "new section"
+      text: "new section" + section_last_index
     });
     current_section_index = sections.length - 1;
     current_section = sections[current_section_index];
     reload();
+    section_last_index++;
   });
 
   $(".add_q").click(function() {
       current_section.questions.push({
-      text: "new question",
+      text: "new question" + question_last_index,
       ans: [],
       image_q: [],
     });
@@ -459,24 +444,24 @@ $(function() {
     current_question = current_section.questions[current_question_index];
     array_image_questions = current_section.questions[current_question_index];
     reload();
+    question_last_index++;
   });
 
   $(".add_a").click(function() {
     current_question.ans.push({
       kind: "text",
       text_q: "Text question",
-      text_a: "new answer",
-      ans_flag: false,
+      text_a: "new answer" + answer_last_index,
       flag: false
     });
     reload();
+    answer_last_index++;
   });
   $(".add_a_image").click(function() {
     current_question.ans.push({
       kind: "image",
       text_q: "Text question",
       flag: false ,
-      ans_flag: false,
       image_a: placeholder_url,
       name: "placeholder.png"
     });

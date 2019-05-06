@@ -10,11 +10,11 @@ body, .body, html {
   font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
 }
 .section {
-  padding-top: 10px;
+  padding-top: 5px;
   overflow-x: scroll;
   white-space: nowrap;
   overflow-y: hidden;
-  height: 52px;
+  height: 35px;
   border-bottom: 1px solid black;
   background: #dddddd;
   border-bottom: 1px solid white;
@@ -36,6 +36,8 @@ body, .body, html {
 }
 .answers {
   padding-left: 10px;
+  display: flex;
+  flex-direction: column;
 }
 .p1 {
   margin-right: 13px;
@@ -55,4 +57,42 @@ body, .body, html {
 }
 .hidden_button {
   margin-top: 10px;
+}
+.a_el_i, .arr_img {
+  width: 150px;
+}
+.arr_img {
+  margin-right: 5px;
+}
+.a_el {
+  display: inline-block;
+}
+.f_ans {
+  padding-top: 10px;
+  border-top: 1px solid black;
+}
+.array_images {
+  margin-bottom: 15px;
+}
+.text {
+  margin-bottom: 10px;
+}
+.f_ans input {
+  margin-right:10px!important;
+  display: inline-block;
+}
+.q_el_t {
+  /* background: rgba(187, 187, 187, 0.29); */
+  background: white;
+  margin-top: 10px;
+  max-width: 165px;
+  padding: 5px 0px;
+  padding-left: 10px;
+}
+.s_el_t {
+  text-align: center;
+}
+.save {
+  margin-top: auto;
+  width: 98%;
 }
