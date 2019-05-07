@@ -115,6 +115,7 @@ $(function() {
 
   $(".section").on("click", ".s_el", function(e) {
     current_section_index = $(e.target).data("index");
+    current_question_index = 0;
     var tmp = current_section_index;
     $(".a_num_s_el" + tmp).css("background", "#e2e5de");
     current_section = sections[tmp];
@@ -186,6 +187,8 @@ $(function() {
             $(".text_q" + tmp).hide();
             $(".a_num_q_el" + tmp).css("background", "#bbbbbb4a");
             current_question =  current_section.questions[tmp];
+            array_image_questions = current_section.questions[tmp];
+            current_question_index = tmp;
             reload();
           }
         });
@@ -203,11 +206,12 @@ $(function() {
     } else {
       if(((new Date().getTime()) - touch_time_a_t) < 400) {
         var input = document.createElement("input");
+        $(input).addClass("text_input");
         input.type = "text";
-        input.size = 12;
+        input.size = 50;
         $(input).addClass("text_t");
         $(".text").hide();
-        $(".f_ans").before(input);
+        $(".text").before(input);
         $(".text_t").val($(".text").text());
         $(".text_t").keydown((e) => {
           // console.log(current_question.ans[0].te);
@@ -225,8 +229,8 @@ $(function() {
   });
 
   $(".answers").on("click", ".a_el", (e) => {
-    current_question_index = $(e.target).data("index");//#c2cac7
-    var tmp = current_question_index;
+    // current_question_index = $(e.target).data("index");//#c2cac7
+    var tmp = $(e.target).data("index");
     if(current_question.ans[tmp].kind == "text") {
       if(touch_time_q == 0) {
         touch_time_q = new Date().getTime();
@@ -234,7 +238,7 @@ $(function() {
         if(((new Date().getTime()) - touch_time_q) < 400) {
           var input = document.createElement("input");
           input.type = "text";
-          input.size = 12;
+          input.size = 50;
           $(input).addClass("text_a" + tmp + " a_el_t");
           $(".a_el_num" + tmp).hide();
           $(".r_num_a_el" + tmp).before(input);

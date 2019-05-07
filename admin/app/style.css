@@ -62,6 +62,7 @@ a {
 }
 .s_el {
   display: inline-block;
+  position: relative;
   background: white;
   padding: 4px 22px 14px 10px;
   margin-left: 19px;
@@ -75,6 +76,7 @@ a {
   margin-top: 10px;
   max-width: 165px;
   padding-left: 10px;
+  position: relative;
 }
 .p_ans {
   margin-top: 2px;
@@ -113,4 +115,8 @@ a {
   font-size: 17px;
   padding-left: 10px;
   padding-top: 5px;
+}
+.text, .a_el_t {
+  width: 98%;
+  white-space: normal;
 }

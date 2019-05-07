@@ -65,6 +65,7 @@ body, .body, html {
   margin-right: 5px;
 }
 .a_el {
+  width: 100%;
   display: inline-block;
 }
 .f_ans {
@@ -126,4 +127,8 @@ body, .body, html {
 }
 .result p {
   margin: 0;
+}
+.s_el_t, .text, .a_el_t {
+  width: 98%;
+  white-space: normal;
 }
