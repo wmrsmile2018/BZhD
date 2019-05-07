@@ -3,6 +3,8 @@ let path = require('path');
 // var aes = new pidCrypt.AES.CBC();
 // 27 - esc
 // 13 - enter
+
+
 var sections = JSON.parse(fs.readFileSync("./json/data.json").toString());
 // console.log(sections);
 var current_section_index;
@@ -167,7 +169,7 @@ $(function() {
     $(".a_num_q_el" + tmp).css("background", "#bbbbbb4a");
     current_question =  current_section.questions[tmp];
     array_image_questions = current_section.questions[tmp];
-    reload();
+    // reload();
     if(touch_time_q == 0) {
       touch_time_q = new Date().getTime();
     } else {
@@ -192,6 +194,8 @@ $(function() {
             reload();
           }
         });
+      } else {
+        reload();
       }
       touch_time_q = 0;
     }

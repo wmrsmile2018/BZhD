@@ -1,0 +1,19 @@
+{
+  "name": "admin",
+  "version": "1.0.0",
+  "description": "BZhDProj",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repositry": "",
+  "author": "bannabel",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^4.1.4",
+    "electron-packager": "^13.1.1"
+  },
+  "dependencies": {
+    "pidcrypt": "0.0.31"
+  }
+}
