@@ -35,18 +35,7 @@ $(function() {
     add_leftMenu();
     add_QuestionContent();
   }
-  $(".answers").on("click", ".checkbox", (e) => {
-    tmp = $(e.target).data("index");
-    current_question.ans[tmp].ans_flag = e.target.checked;
-    add_elements();
-  });
-  $(".questions").on("click", ".q_el_t", (e) => {
-    current_question_index = $(e.target).data("index");
-    var tmp = current_question_index;
-    current_question = current_section.questions[tmp];
-    array_image_questions = current_section.questions[tmp];
-    add_elements();
-  });
+
   function add_checkbox() {
     if(sections.length) {
       var div, input, p;
@@ -112,7 +101,7 @@ $(function() {
         for(var t = 0; t < current_question.image_q.length; t++) {
           extension = current_question.image_q[t].name.split(".").pop();
           img1 = document.createElement("img");
-          $(img1).addClass("arr_img").data("index", t).attr("src", `data:image/${extension};base64,${fs.readFileSync(current_question.image_q[t].image_data).toString("base64")}`);
+          $(img1).addClass("arr_img").data("index", t).attr("src",`data:image/${extension};base64,${fs.readFileSync(current_question.image_q[t].image_data).toString("base64")}`);
           $(".array_images").append(img1);
         }
       }
@@ -128,7 +117,7 @@ $(function() {
         $(".a_num_a_el" + i).append(div2);
       } else if (current_question.ans[i].kind == "image") {
         extension = current_question.ans[i].name.split(".").pop();
-        $(img).addClass("a_el_i " + "a_el_num_i" + i).data("index", i).attr("src",          `data:image/${extension};base64,${fs.readFileSync(current_question.ans[i].image_a).toString("base64")}`);
+        $(img).addClass("a_el_i " + "a_el_num_i" + i).data("index", i).attr("src",`data:image/${extension};base64,${fs.readFileSync(current_question.ans[i].image_a).toString("base64")}`);
         $(".a_num_a_el" + i).append(img);
       }
     }
@@ -140,6 +129,93 @@ $(function() {
       }
     }
   }
+
+  function calc_res() {
+    console.log(sections);
+    var progress = 0, false_flag = 0;
+    var cur_q;
+    for(var i = 0; i < current_section.questions.length; i++) {
+      cur_q = current_section.questions[i];
+      for(var t = 0; t < cur_q.ans.length; t++) {
+        if(cur_q.ans[t].ans_flag != cur_q.ans[t].flag) {
+          false_flag++;
+        }
+      }
+      if(false_flag) {
+        false_ans++;
+      } else {
+        true_ans++;
+      }
+    }
+    console.log(true_ans);
+    console.log(false_ans);
+    progress = true_ans / (false_ans + true_ans) * 100;
+    return parseFloat(progress.toFixed(2));
+  }
+  function print_data() {
+    var div, p1, p2, p3;
+    var procent = calc_res();
+    div = document.createElement("div");
+    p1 = document.createElement("p");
+    p2 = document.createElement("p");
+    p3 = document.createElement("p");
+    $(div).addClass("data");
+    $(p1).addClass("p1_data").text("Студент: " + student_name);
+    $(p2).addClass("p2_data").text("Группа: " + group);
+    $(p3).addClass("p3_data").text("Прогресс: " + procent + "%");
+    $(".answers_res").append(div);
+    $(".data").append(p1);
+    $(".data").append(p2);
+    $(".data").append(p3);
+  }
+  function print_result() {
+    var div, div_true, div1_true, div_false, div1_false, p1, p2;
+    p1 = document.createElement("p");
+    p2 = document.createElement("p");
+    div = document.createElement("div");
+    div_true = document.createElement("div");
+    div1_true = document.createElement("div");
+    div_false = document.createElement("div");
+    div1_false = document.createElement("div");
+    $(p1).add("true_res").text(true_ans);
+    $(p2).add("false_res").text(false_ans);
+    $(div).addClass("result");
+    $(div_true).addClass("div_true");
+    $(div1_true).addClass("div1_true").css("height", 200 * true_ans / (true_ans + false_ans));
+    $(div1_false).addClass("div1_false").css("height", 200 * false_ans / (true_ans + false_ans));
+    $(div_false).addClass("div_false");
+    $(".answers_res").append(div);
+    $(".result").append(div_true);
+    $(".result").append(div_false);
+    $(".div_true").append(div1_true);
+    $(".div_false").append(div1_false);
+    $(".div_true").append(p1);
+    $(".div_false").append(p2);
+  }
+
+  $(".answers").on("click", ".checkbox", (e) => {
+    tmp = $(e.target).data("index");
+    current_question.ans[tmp].ans_flag = e.target.checked;
+    add_elements();
+  });
+
+  $(".answers").on("click", ".save", (e) => {
+      $(".answers").remove();
+      $(".q_el_t").remove();
+      var div = document.createElement("div");
+      $(div).addClass("answers_res");
+      $(".contents").append(div);
+      print_data();
+      print_result();
+  });
+  $(".questions").on("click", ".q_el_t", (e) => {
+    current_question_index = $(e.target).data("index");
+    var tmp = current_question_index;
+    current_question = current_section.questions[tmp];
+    array_image_questions = current_section.questions[tmp];
+    add_elements();
+  });
+
 
   $(".answers").on("click", ".hidden_button", (e) => {
     if(sections.length) {
@@ -155,9 +231,9 @@ $(function() {
       if(student_name != "" && group != "" && value) {
         $(".hidden_block").remove();
         value-= 1;
+        $(".save").show();
+        add_elements();
       }
-    $(".save").show();
-    add_elements();
     }
   });
 });

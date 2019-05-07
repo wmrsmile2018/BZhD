@@ -75,7 +75,7 @@ $(function() {
       }
   });
 
-  $(".answers").on("click", ".image_input_a", (e) => {
+  $(".answers").on("change", ".image_input_a", (e) => {
     console.log("change2");
     var input = e.target;
     var tmp = $(input).data("index");
@@ -98,7 +98,6 @@ $(function() {
     } else {
       $(".p_ans_el" + tmp).css("background", "#fff");
     }
-    reload();
   });
 
   $(".section").on("click", ".s_el_t", function(e) {
