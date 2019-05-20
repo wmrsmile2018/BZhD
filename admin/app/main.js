@@ -13,7 +13,7 @@ function createWindow () {
   // win.loadFile('test.html')
 
   // Отображаем средства разработчика.
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()
 
   // Будет вызвано, когда окно будет закрыто.
 

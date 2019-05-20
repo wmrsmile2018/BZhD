@@ -1,15 +1,11 @@
 let fs = require('fs');
 let path = require('path');
+// console.log(path);
 // var aes = new pidCrypt.AES.CBC();
 // 27 - esc
 // 13 - enter
-var loc = window.location.pathname;
-var dir = loc.substring(0, loc.lastIndexOf('/'));
 
-console.log(loc);
-console.log(dir);
-
-var sections = JSON.parse(fs.readFileSync("./json/data.json").toString());
+var sections = JSON.parse(fs.readFileSync(path.join(__dirname, "/json/data.json")).toString());
 // console.log(sections);
 var current_section_index;
 var current_question_index;
@@ -41,10 +37,7 @@ var touch_time_q = 0;
 var touch_time_a_t = 0;
 var touch_time_a_a = 0;
 var placeholder_url = "placeholder.png";
-var placeholder_data = "data:image/png;base64," + fs.readFileSync("placeholder.png").toString("base64");
-
-
-// console.log(JSON.parse(fs.readFileSync("./json/data.json").toString()));
+var placeholder_data = "data:image/png;base64," + fs.readFileSync(path.join(__dirname, "placeholder.png")).toString("base64");
 
 $(function() {
 
@@ -60,8 +53,7 @@ $(function() {
     reloadNavigation(sections, current_section_index);
     reloadLeftMenu(current_section, current_question_index);
     reloadQuestionContent(current_question);
-    fs.writeFileSync("./json/data.json", JSON.stringify(sections));
-    console.log("reload");
+    fs.writeFileSync(path.join(__dirname, "/json/data.json"), JSON.stringify(sections));
   }
   reload();
 
@@ -74,8 +66,8 @@ $(function() {
       var extension = input.files[0].path.split(".").pop();
       var data = (new Date()).getTime() + "." + extension;
       console.log(data);
-      fs.writeFileSync("./images/" + data, fs.readFileSync(input.files[0].path));
-      current_question.image_q[tmp].image_data = "./images/" + data;
+      fs.writeFileSync(path.join(__dirname, "/images/" + data), fs.readFileSync(path.join(__dirname, input.files[0].path)));
+      current_question.image_q[tmp].image_data = "/images/" + data;
       current_question.image_q[tmp].name = data;
       reload();
       }
@@ -89,8 +81,8 @@ $(function() {
       var reader = new FileReader();
       var extension = input.files[0].path.split(".").pop();
       var data = (new Date()).getTime() + "." + extension;
-      fs.writeFileSync("./images/" + data, fs.readFileSync(input.files[0].path));
-      current_question.ans[tmp].image_a = "./images/" + data;
+      fs.writeFileSync(path.join(__dirname, "/images/" + data), fs.readFileSync(path.join(__dirname, input.files[0].path)));
+      current_question.ans[tmp].image_a = "/images/" + data;
       current_question.ans[tmp].name = data;
       reload();
       }
@@ -170,10 +162,13 @@ $(function() {
   $(".questions").on("click", ".q_el", function(e) {
     current_question_index = $(e.target).data("index");//#c2cac7
     var tmp = current_question_index;
+    for(var i = 0; i < current_section.questions.length; i++) {
+      $(".a_num_q_el" + i).css("background", "white");
+    }
     $(".a_num_q_el" + tmp).css("background", "#bbbbbb4a");
     current_question =  current_section.questions[tmp];
     array_image_questions = current_section.questions[tmp];
-    reload();
+    reloadQuestionContent(current_question);
     if(touch_time_q == 0) {
       touch_time_q = new Date().getTime();
     } else {
@@ -405,7 +400,7 @@ $(function() {
             $(".lab_arr_img_num" + t).attr("for", "files" + t);
             $(input1).data("index", t).addClass("inp_arr_img " + "inp_arr_img_num" + t);
             $(div3).addClass("div_arr_img " + "div_arr_img_num" + t).data("index", t);
-            $(img1).addClass("arr_img " + "arr_img_num" + t).data("index", t).attr("src", `data:image/${extension};base64,${fs.readFileSync(current_question.image_q[t].image_data).toString("base64")}`);
+            $(img1).addClass("arr_img " + "arr_img_num" + t).data("index", t).attr("src", `data:image/${extension};base64,${fs.readFileSync(path.join(__dirname, current_question.image_q[t].image_data)).toString("base64")}`);
             $(a2).addClass("rem_arr_img " + "rem_arr_img_num" + t).data("index", t);
             $(span2).addClass("glyphicon glyphicon-minus");
             $(".array_images").append(div3);
@@ -429,7 +424,7 @@ $(function() {
           $(".a_num_a_el" + i).append(div2);
         } else if (current_question.ans[i].kind == "image") {
           extension = current_question.ans[i].name.split(".").pop();
-          $(img).addClass("a_el_i " + "a_el_num_i" + i).data("index", i).attr("src",          `data:image/${extension};base64,${fs.readFileSync(current_question.ans[i].image_a).toString("base64")}`);
+          $(img).addClass("a_el_i " + "a_el_num_i" + i).data("index", i).attr("src",          `data:image/${extension};base64,${fs.readFileSync(path.join(__dirname, current_question.ans[i].image_a)).toString("base64")}`);
           $(".a_num_a_el" + i).append(img);
           $(".a_num_a_el" + i).append(input2);
         }
