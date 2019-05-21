@@ -11,9 +11,8 @@ body, .body, html {
 }
 .section {
   padding-top: 5px;
-  overflow-x: scroll;
+  overflow-y: scroll;
   white-space: nowrap;
-  overflow-y: hidden;
   height: 35px;
   border-bottom: 1px solid black;
   background: #dddddd;

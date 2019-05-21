@@ -213,7 +213,11 @@ $(function() {
     var tmp = current_question_index;
     current_question = current_section.questions[tmp];
     array_image_questions = current_section.questions[tmp];
-    add_elements();
+    for(var i = 0; i < current_section.questions.length; i++) {
+    $(".q_el_num" + i).css("background", "white");
+  }
+  $(".q_el_num" + tmp).css("background", "#bbbbbb4a");
+    add_QuestionContent();
   });
 
 
