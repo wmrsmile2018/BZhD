@@ -66,7 +66,7 @@ $(function() {
       var extension = input.files[0].path.split(".").pop();
       var data = (new Date()).getTime() + "." + extension;
       console.log(data);
-      fs.writeFileSync(path.join(__dirname, "/images/" + data), fs.readFileSync(path.join(__dirname, input.files[0].path)));
+      fs.writeFileSync(path.join(__dirname, "/images/" + data), fs.readFileSync(input.files[0].path));
       current_question.image_q[tmp].image_data = "/images/" + data;
       current_question.image_q[tmp].name = data;
       reload();
@@ -81,7 +81,7 @@ $(function() {
       var reader = new FileReader();
       var extension = input.files[0].path.split(".").pop();
       var data = (new Date()).getTime() + "." + extension;
-      fs.writeFileSync(path.join(__dirname, "/images/" + data), fs.readFileSync(path.join(__dirname, input.files[0].path)));
+      fs.writeFileSync(path.join(__dirname, "/images/" + data), fs.readFileSync(input.files[0].path));
       current_question.ans[tmp].image_a = "/images/" + data;
       current_question.ans[tmp].name = data;
       reload();
